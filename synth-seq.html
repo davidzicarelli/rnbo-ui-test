@@ -484,6 +484,22 @@ const MAXPAT_DATA = {
     "boxes": [
       {
         "box": {
+          "id": "obj-24",
+          "maxclass": "comment",
+          "numinlets": 1,
+          "numoutlets": 0,
+          "patching_rect": [
+            307,
+            63,
+            442,
+            20
+          ],
+          "presentation_linecount": 9,
+          "text": "note: you may have to play a note on the keyboard to get the sequence to start"
+        }
+      },
+      {
+        "box": {
           "id": "obj-23",
           "maxclass": "comment",
           "numinlets": 1,
@@ -522,7 +538,7 @@ const MAXPAT_DATA = {
           "patching_rect": [
             272,
             229,
-            76,
+            60.5,
             20
           ],
           "text": "seq on/off"
@@ -13512,7 +13528,18 @@ class CommentComponent extends MaxComponent {
         const el = document.createElement('div');
         el.className = 'max-component max-comment';
         el.textContent = this.text;
-        el.style.width = this.width + 'px';
+
+        // Detect single-line comments: if height is roughly one line (fontSize + padding),
+        // prioritize height by allowing width to expand (nowrap)
+        const singleLineHeight = this.fontSize + 10;  // font size + ~10px for padding/line-height
+        if (this.height <= singleLineHeight) {
+            // Single line: don't constrain width, prevent wrapping
+            el.style.whiteSpace = 'nowrap';
+            el.style.minWidth = this.width + 'px';
+        } else {
+            // Multi-line: use fixed width, allow wrapping
+            el.style.width = this.width + 'px';
+        }
 
         // Font name
         if (this.fontName) {
